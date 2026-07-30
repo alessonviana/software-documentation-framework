@@ -1,0 +1,32 @@
+name: Feature request
+description: Propose a focused improvement to the framework
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: reader_problem
+    attributes:
+      label: Reader or maintainer problem
+      description: Which audience and task are not served today?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Intended outcome
+      description: Describe the result without prescribing unnecessary implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Link public sources or describe reproducible project friction.
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and exclusions
+      description: What should and should not change?
+    validations:
+      required: true

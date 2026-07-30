@@ -1,0 +1,6 @@
+interface:
+  display_name: "Document Software Projects"
+  short_description: "Create accurate, maintainable software docs"
+  default_prompt: "Use $document-software-project to audit this repository and create or update its documentation without inventing facts."
+policy:
+  allow_implicit_invocation: true

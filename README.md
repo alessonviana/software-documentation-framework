@@ -3,9 +3,9 @@
 An evidence-driven framework for creating, auditing, and maintaining software
 project documentation alongside code and specifications.
 
-The repository includes a reusable Codex skill, adaptable templates, a safe
-project evidence collector, documentation standards, public-repository safeguards,
-tests, and automated validation.
+The repository includes a portable Agent Skill, adaptable templates, a safe project
+evidence collector, documentation standards, public-repository safeguards, tests,
+and automated validation.
 
 > License status: no open-source license has been selected yet. Public visibility
 > does not grant permission to copy, modify, or redistribute the contents. The
@@ -25,7 +25,7 @@ rules:
 
 ## What is included
 
-- `document-software-project`, a reusable skill for ChatGPT and Codex
+- `document-software-project`, a portable skill for Agent Skills-compatible tools
 - a safe evidence collector that excludes actual secret files and values
 - guidance for greenfield, brownfield, focused-update, and audit-only work
 - framework-agnostic support for Spec Kit, OpenSpec, Kiro Specs, BDD, RFCs, and
@@ -69,6 +69,7 @@ drift and asks which intent should win.
 │   ├── adr/
 │   ├── pt-BR/
 │   ├── ARCHITECTURE.md
+│   ├── COMPATIBILITY.md
 │   ├── METHODOLOGY.md
 │   ├── PUBLIC-REPOSITORY-SAFETY.md
 │   ├── USAGE.md
@@ -82,9 +83,50 @@ drift and asks which intent should win.
 
 ## Quick start
 
-### Option 1: use from Codex with the skill installer
+This skill follows the open [Agent Skills specification](https://agentskills.io/specification).
+It is not exclusive to Codex. The same skill content can be used by Codex, Claude
+Code, Gemini CLI, GitHub Copilot, and other tools that implement the standard.
+Installation locations and invocation syntax vary by agent host.
 
-Open the skill installer and ask it to install the skill from this path:
+| Agent host | Project location | Explicit invocation |
+| --- | --- | --- |
+| Codex | `.agents/skills/document-software-project/` | `$document-software-project` |
+| Gemini CLI | `.agents/skills/document-software-project/` | Ask Gemini to use `document-software-project` |
+| GitHub Copilot | `.agents/skills/document-software-project/` | Include `/document-software-project` in the prompt |
+| Claude Code | `.claude/skills/document-software-project/` | `/document-software-project` |
+
+See the [compatibility and installation guide](docs/COMPATIBILITY.md) for user-scope
+paths, verification commands, limitations, and instructions for other agents.
+
+### Option 1: add the skill to a compatible project
+
+Clone this framework:
+
+```bash
+git clone https://github.com/alessonviana/software-documentation-framework.git
+```
+
+For Codex, Gemini CLI, or GitHub Copilot:
+
+```bash
+mkdir -p path/to/target-project/.agents/skills
+cp -R software-documentation-framework/.agents/skills/document-software-project \
+  path/to/target-project/.agents/skills/
+```
+
+For Claude Code:
+
+```bash
+mkdir -p path/to/target-project/.claude/skills
+cp -R software-documentation-framework/.agents/skills/document-software-project \
+  path/to/target-project/.claude/skills/
+```
+
+The skill itself remains identical. Only its discovery location changes.
+
+### Option 2: use the Codex skill installer
+
+In Codex, ask the skill installer to retrieve the skill from this path:
 
 ```text
 $skill-installer
@@ -94,20 +136,9 @@ https://github.com/alessonviana/software-documentation-framework/tree/main/.agen
 
 The official Codex guidance supports installing skills from other repositories.
 
-### Option 2: add the skill to one repository
-
-Clone this framework, then copy the skill to the target project's repository scope:
-
-```bash
-git clone https://github.com/alessonviana/software-documentation-framework.git
-mkdir -p path/to/target-project/.agents/skills
-cp -R software-documentation-framework/.agents/skills/document-software-project \
-  path/to/target-project/.agents/skills/
-```
-
-Codex discovers repository skills from `.agents/skills`.
-
 ### Option 3: add the skill to your user scope
+
+For Codex, Gemini CLI, and GitHub Copilot:
 
 ```bash
 mkdir -p "$HOME/.agents/skills"
@@ -115,9 +146,17 @@ cp -R software-documentation-framework/.agents/skills/document-software-project 
   "$HOME/.agents/skills/"
 ```
 
-Codex also supports symlinked skill directories.
+For Claude Code:
+
+```bash
+mkdir -p "$HOME/.claude/skills"
+cp -R software-documentation-framework/.agents/skills/document-software-project \
+  "$HOME/.claude/skills/"
+```
 
 ### Invoke the skill
+
+In Codex:
 
 ```text
 $document-software-project
@@ -125,10 +164,18 @@ Audit this repository and propose the smallest sufficient documentation set.
 Do not modify files yet.
 ```
 
-Or request a full baseline:
+In Claude Code:
 
 ```text
-$document-software-project
+/document-software-project
+Audit this repository and propose the smallest sufficient documentation set.
+Do not modify files yet.
+```
+
+In Gemini CLI or another compatible agent, use a direct natural-language request:
+
+```text
+Use the document-software-project skill.
 Inspect this project and create its documentation from zero. Ask before writing
 anything that cannot be supported by project evidence.
 ```
@@ -160,6 +207,7 @@ GitHub Actions runs the same checks for every push and pull request.
 
 - [English usage guide](docs/USAGE.md)
 - [Guia detalhado em português](docs/pt-BR/GUIA-DE-USO.md)
+- [Agent compatibility](docs/COMPATIBILITY.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Methodology and sources](docs/METHODOLOGY.md)
 - [Public-repository safety](docs/PUBLIC-REPOSITORY-SAFETY.md)

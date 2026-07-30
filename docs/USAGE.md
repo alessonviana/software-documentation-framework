@@ -6,9 +6,26 @@ This guide is for developers, product engineers, platform teams, technical write
 and AI-assisted development teams that need accurate, maintainable project
 documentation.
 
+## Agent compatibility
+
+This is a portable Agent Skill, not a Codex-only instruction set. The canonical
+package is stored in `.agents/skills`, which Codex, Gemini CLI, and GitHub Copilot
+can discover at project scope. Claude Code supports the same skill format but
+expects project skills under `.claude/skills`.
+
+| Agent host | Project path | Invocation |
+| --- | --- | --- |
+| Codex | `.agents/skills/document-software-project/` | `$document-software-project` |
+| Gemini CLI | `.agents/skills/document-software-project/` | Ask Gemini to use the skill |
+| GitHub Copilot | `.agents/skills/document-software-project/` | Use `/document-software-project` in the prompt |
+| Claude Code | `.claude/skills/document-software-project/` | `/document-software-project` |
+
+Read [Agent compatibility](COMPATIBILITY.md) for complete installation,
+verification, and fallback instructions.
+
 ## Choose an adoption mode
 
-### Repository scope
+### Repository scope for Codex, Gemini CLI, or GitHub Copilot
 
 Use repository scope when the workflow should apply only to one project or should
 be shared with every contributor to that project.
@@ -30,7 +47,17 @@ cp -R .agents/skills/document-software-project \
 Commit the skill with the target repository only when its license and team policy
 permit that use.
 
-### User scope
+### Repository scope for Claude Code
+
+Claude Code uses the same files from a different discovery location:
+
+```bash
+mkdir -p /path/to/target-project/.claude/skills
+cp -R .agents/skills/document-software-project \
+  /path/to/target-project/.claude/skills/
+```
+
+### User scope for Codex, Gemini CLI, or GitHub Copilot
 
 Use user scope when the same workflow should be available across local repositories:
 
@@ -54,7 +81,16 @@ ln -s "$(pwd)/.agents/skills/document-software-project" \
 
 Codex supports symlinked skill directories.
 
-### Skill installer
+### User scope for Claude Code
+
+```bash
+mkdir -p "$HOME/.claude/skills"
+cp -R .agents/skills/document-software-project "$HOME/.claude/skills/"
+```
+
+Claude Code also supports symlinked skill directories in current versions.
+
+### Codex skill installer
 
 Ask the built-in installer to retrieve the skill from the repository:
 
@@ -66,14 +102,36 @@ https://github.com/alessonviana/software-documentation-framework/tree/main/.agen
 
 ## Invoke the skill
 
-Use an explicit invocation when you want to guarantee activation:
+In Codex:
 
 ```text
 $document-software-project
 <Your documentation request>
 ```
 
-Codex may also activate the skill implicitly when a task matches its description.
+In Claude Code:
+
+```text
+/document-software-project
+<Your documentation request>
+```
+
+In GitHub Copilot:
+
+```text
+Use the /document-software-project skill.
+<Your documentation request>
+```
+
+In Gemini CLI:
+
+```text
+Use the document-software-project skill.
+<Your documentation request>
+```
+
+Compatible agents may also activate the skill implicitly when a task matches its
+description.
 
 ## Recommended workflows
 

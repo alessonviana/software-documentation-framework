@@ -20,7 +20,7 @@ Ele pode ser utilizado em:
 
 O repositório possui quatro partes principais:
 
-1. **Skill:** define o processo que ChatGPT ou Codex deve seguir.
+1. **Skill:** define o processo que um agente de IA compatível deve seguir.
 2. **Referências:** definem os padrões de documentação e alinhamento com specs.
 3. **Templates:** fornecem estruturas iniciais adaptáveis.
 4. **Scripts:** coletam evidências e validam o repositório.
@@ -28,9 +28,30 @@ O repositório possui quatro partes principais:
 A documentação específica de um sistema deve permanecer no repositório desse
 sistema. Este repositório central mantém apenas o padrão reutilizável.
 
+## Compatibilidade com agentes de IA
+
+Esta não é uma skill exclusiva do Codex. Ela segue a especificação aberta
+[Agent Skills](https://agentskills.io/specification), utilizada por diferentes
+ferramentas. O conteúdo da skill é o mesmo, mas o diretório de instalação e o
+comando de ativação podem mudar.
+
+| Agente | Diretório no projeto | Ativação explícita |
+| --- | --- | --- |
+| Codex | `.agents/skills/document-software-project/` | `$document-software-project` |
+| Gemini CLI | `.agents/skills/document-software-project/` | Solicitar o uso da skill pelo nome |
+| GitHub Copilot | `.agents/skills/document-software-project/` | Incluir `/document-software-project` no pedido |
+| Claude Code | `.claude/skills/document-software-project/` | `/document-software-project` |
+
+A compatibilidade depende da ferramenta que executa o agente, não apenas do modelo
+de linguagem. Para utilizar o fluxo completo, o agente precisa acessar os arquivos
+do projeto e executar Python 3.
+
+Consulte também o
+[guia completo de compatibilidade](../COMPATIBILITY.md).
+
 ## Escolha o tipo de instalação
 
-### Instalação em um único projeto
+### Instalação em um projeto para Codex, Gemini CLI ou GitHub Copilot
 
 Use esta opção quando a skill deve ser compartilhada com todos que trabalham em um
 repositório específico.
@@ -53,7 +74,25 @@ cp -R software-documentation-framework/.agents/skills/document-software-project 
 Antes de incluir a skill em outro repositório, verifique a licença vigente e as
 políticas da equipe.
 
-### Instalação para todos os seus projetos locais
+### Instalação em um projeto para Claude Code
+
+O Claude Code utiliza o mesmo conteúdo, mas procura skills do projeto em
+`.claude/skills`:
+
+```bash
+mkdir -p /caminho/meu-projeto/.claude/skills
+cp -R software-documentation-framework/.agents/skills/document-software-project \
+  /caminho/meu-projeto/.claude/skills/
+```
+
+Depois, inicie o Claude Code no projeto e utilize:
+
+```text
+/document-software-project
+Audite a documentação deste projeto sem modificar arquivos.
+```
+
+### Instalação para todos os projetos no Codex, Gemini CLI ou GitHub Copilot
 
 Use o escopo do usuário:
 
@@ -72,7 +111,18 @@ ln -s "$(pwd)/software-documentation-framework/.agents/skills/document-software-
 
 O Codex reconhece skills armazenadas ou vinculadas nesse diretório.
 
-### Instalação pelo skill installer
+### Instalação para todos os projetos no Claude Code
+
+```bash
+mkdir -p "$HOME/.claude/skills"
+cp -R software-documentation-framework/.agents/skills/document-software-project \
+  "$HOME/.claude/skills/"
+```
+
+Nas versões atuais, o Claude Code também aceita links simbólicos no diretório de
+skills.
+
+### Instalação pelo skill installer do Codex
 
 No Codex, utilize:
 
@@ -84,15 +134,36 @@ https://github.com/alessonviana/software-documentation-framework/tree/main/.agen
 
 ## Como ativar a skill
 
-Para garantir a ativação:
+No Codex:
 
 ```text
 $document-software-project
 <descreva o trabalho de documentação>
 ```
 
-A skill também pode ser ativada automaticamente quando o pedido estiver claramente
-relacionado à documentação de software.
+No Claude Code:
+
+```text
+/document-software-project
+<descreva o trabalho de documentação>
+```
+
+No GitHub Copilot:
+
+```text
+Use a skill /document-software-project.
+<descreva o trabalho de documentação>
+```
+
+No Gemini CLI ou em outro agente compatível:
+
+```text
+Use a skill document-software-project.
+<descreva o trabalho de documentação>
+```
+
+A skill também pode ser ativada automaticamente quando o pedido corresponder à
+descrição dela e a ferramenta oferecer ativação automática.
 
 ## Fluxo recomendado para um projeto novo
 
